@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Health Light Family</title>
+<style>
+  :root{
+    --bg:#e9f0f8;
+    --card:#ffffff;
+    --muted:#6b7280;
+    --accent:#0b63d3;
+    --shadow:0 12px 30px rgba(18,38,63,.12);
+    --radius:12px;
+    --panel-w:420px;
+    font-family:"Helvetica Neue",Arial,sans-serif;
+  }
+  html{font-size:14px}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:#111827;
+    display:flex;
+    justify-content:center;
+    align-items:flex-start;
+    flex-direction:column;
+    padding:28px;
+  }
+  .wrap{
+    width:100%;
+    max-width:880px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .panel{
+    width:var(--panel-w);
+    background:var(--card);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:var(--shadow);
+    margin-bottom:20px;
+    position:relative;
+  }
+  .verify-panel{display:flex;flex-direction:column;align-items:center}
+  .brand{text-align:center;margin-bottom:16px}
+  .brand img{max-width:120px;height:auto}
+  .field{width:100%;margin-bottom:12px;text-align:center}
+  label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px}
+  input{
+    width:100%;padding:12px 14px;border-radius:8px;border:1px solid #e6eef8;
+    font-size:16px;box-sizing:border-box;text-align:center;appearance:none
+  }
+  input::-webkit-inner-spin-button,
+  input::-webkit-outer-spin-button,
+  input::-webkit-clear-button{appearance:none;margin:0}
+  .btn{
+    background:var(--accent);color:#fff;border:none;padding:12px 16px;
+    font-size:15px;cursor:pointer;box-shadow:0 8px 20px rgba(11,99,211,.16);
+    border-radius:8px;width:100%;margin-top:8px
+  }
+  .muted{color:var(--muted);font-size:14px;margin-top:10px;min-height:18px;text-align:center}
+  .certificate-panel{
+    background:linear-gradient(180deg,#ffffff,#fbfdff);
+    border:1px solid rgba(15,23,42,.04);
+  }
+  .cert-logo{position:absolute;top:18px;right:18px;width:60px;height:auto}
+  .clinic{font-weight:700;font-size:22px;line-height:1.05;margin-bottom:6px}
+  .clinic-sub{font-size:13px;color:var(--muted);margin-bottom:18px}
+  .title{text-align:center;font-weight:800;font-size:20px;margin:6px 0 12px}
+  .meta{text-align:center;color:var(--muted);margin-bottom:4px}
+  .row{display:block;margin-bottom:10px}
+  .label{display:block;color:var(--muted);font-size:13px;margin-bottom:4px}
+  .val{font-weight:700;font-size:15px}
+  .paragraph{margin-top:8px;color:#222;line-height:1.5;font-size:14px}
+  .footer-note{margin-top:14px;color:var(--muted);font-style:italic;font-size:13px}
+
+  /* START: PC Centering Changes */
+  @media (min-width: 881px) {
+    body{
+      /* තිරස් අතට මධ්‍යගත කරන්න */
+      align-items:center;
+      /* ඉහළින් පරතරයක් දෙන්න */
+      padding-top: 50px; 
+    }
+    .wrap{
+      /* wrap එක පැනලයේ පළලට සීමා කර මධ්‍යයේ තබා ගන්න */
+      max-width: var(--panel-w);
+      width: 100%;
+    }
+  }
+  /* END: PC Centering Changes */
+
+  @media (max-width:480px){.panel{width:100%}}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel verify-panel" id="verifyPanel">
+      <div class="brand">
+  
+      </div>
+      <div class="field">
+        <label>Medical Report Number</label>
+        <input id="mcNo" placeholder="" />
+      </div>
+      <div class="field">
+        <label>NRIC / Passport No.</label>
+        <input id="nric" placeholder="" />
+      </div>
+      <button id="verifyMcBtn" class="btn">Verify</button>
+      <div id="msg" class="muted"></div>
+    </div>
+
+    <div class="panel certificate-panel" id="certificatePanel" aria-hidden="true" style="display:none;">
+      <img src="Panel Logo.svg" alt="Logo" class="cert-logo" />
+      <div class="clinic">
+        HealthLight Family<br />Medicine Clinic
+      </div>
+      <div class="clinic-sub">
+        Blk 601 Choa Chu Kang Street 62<br />#01-09 Singapore 680601
+      </div>
+      <div class="title">MEDICAL CERTIFICATE</div>
+      <div class="meta">No: <span id="c_mc">—</span></div>
+      <div class="meta">Issued date: <span id="c_issued">—</span></div>
+      <div class="row">
+        <div class="label">Name</div>
+        <div id="c_name" class="val">—</div>
+      </div>
+      <div class="row">
+        <div class="label">NRIC/Passport number</div>
+        <div id="c_nric" class="val">—</div>
+      </div>
+      <div class="row">
+        <div class="label">Start Date</div>
+        <div id="c_start" class="val">—</div>
+      </div>
+      <div class="row">
+        <div class="label">End Date</div>
+        <div id="c_end" class="val">—</div>
+      </div>
+      <div class="row">
+        <div class="label">Type of medical leave granted</div>
+        <div id="c_type" class="val">Medical Certificate</div>
+      </div>
+      <div class="paragraph" id="c_statement">
+        This is to certify that the patient is unfit for duty for a period of
+        <b id="c_days">—</b> day(s).
+      </div>
+      <div class="row" style="margin-top:14px;">
+        <div class="label">Issued by</div>
+        <div id="c_doctor" class="val">—</div>
+      </div>
+      <div class="footer-note">
+        This MC is not valid for Court Attendance or Police Report
+      </div>
+    </div>
+  </div>
+
+<script>
+  // **යාවත්කාලීන කළ Web App URL එක මෙහි නියම කර ඇත**
+  const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx7xMZI9Vd7CfB8O3Df4VdcIDKU4XHuB9j9RHFZh0vfdf3BJ66Y2Q3Ph2IOcGemkXru/exec'; 
+
+  let currentDB = {}; 
+  let isFetching = false; 
+
+  /**
+   * දිනය නිවැරදි DD/MM/YYYY ආකෘතියට හරවයි.
+   * Google Apps Script එක නිවැරදිව ක්‍රියා නොකරන්නේ නම් මෙය උපකාරී වේ.
+   */
+  function formatSheetDate(dateString) {
+      if (!dateString) return '—';
+      
+      // දත්ත JavaScript Date Object එකක් ලෙස සකසා ගන්න
+      const date = new Date(dateString);
+
+      // වලංගු දිනයක් දැයි පරීක්ෂා කරන්න
+      if (isNaN(date.getTime())) {
+          return dateString; 
+      }
+      
+      // දින සහ මාස සඳහා ශුන්‍ය (0) එකතු කරන්න (DD/MM/YYYY)
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // මාස 0 සිට පටන් ගනී
+      const year = date.getFullYear();
+
+      return `${day}/${month}/${year}`;
+  }
+
+  // දත්ත ලබා ගැනීමේ ක්‍රියාවලිය
+  async function fetchGoogleSheetData() {
+    if (isFetching) return;
+    isFetching = true;
+
+    try {
+      const response = await fetch(APPS_SCRIPT_URL);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const rawData = await response.json();
+      
+      // ලැබුණු දත්තවල දිනයන් පරිවර්තනය කරන්න
+      const processedData = {};
+      for (const key in rawData) {
+          const entry = rawData[key];
+          
+          // MC No. එක යතුරක් ලෙස ඇති දත්ත තිබේ නම්, එය සත්‍යාපන දත්ත නොවන බැවින් මඟ හරින්න
+          // (MC No. වෙනස් වූ විට NRIC auto-fill කිරීමට මෙය අවශ්‍ය විය)
+          if(entry.status === undefined) {
+             processedData[key] = entry; 
+             continue;
+          }
+
+          processedData[key] = {
+              ...entry,
+              // දින string එකක් ලෙස ලැබුණත්, වෙබ් එකේදි DD/MM/YYYY ආකෘතියට හරවයි.
+              issued: formatSheetDate(entry.issued),
+              start: formatSheetDate(entry.start),
+              end: formatSheetDate(entry.end)
+          };
+      }
+      
+      currentDB = processedData;
+      console.log('Data successfully updated and dates processed. Ready for instant lookup.');
+    } catch (error) {
+      console.error('Error fetching data from Google Script:', error);
+    } finally {
+      isFetching = false;
+    }
+  }
+
+  // 1. පිටුව පූරණය වූ වහාම දත්ත ලබා ගන්න
+  fetchGoogleSheetData(); 
+  // 2. ඉන්පසු සෑම තත්පර 2කට වරක්ම යාවත්කාලීන කරන්න
+  setInterval(fetchGoogleSheetData, 2000); 
+
+  // ක්ෂණිකව NRIC ෆිල් කිරීම සඳහා වූ Event Listener
+  document.getElementById("mcNo").addEventListener("input", function(){
+    const mc = this.value.trim();
+    const nricInput = document.getElementById("nric");
+    const msgEl = document.getElementById("msg");
+
+    if(!mc) {
+      nricInput.value = "";
+      msgEl.textContent = "";
+      return;
+    }
+
+    let found = null;
+    // මතකයේ ඇති currentDB එක හරහා වේගයෙන් සෙවීම
+    // Apps Script එකේ MC No. පමණක් යතුර ලෙස යැවූ entry එක මෙහිදී සොයා ගනී.
+    // (මෙම entry එකට status: "Valid" නැත)
+    if(currentDB[mc] && currentDB[mc].nric) {
+        found = currentDB[mc];
+    }
+    
+    // වැදගත් සටහන: ඔබගේ Apps Script එකේ key එක MCNo|NRIC ලෙස තිබිය යුතු අතර,
+    // MC No. වෙනස් වූ විට NRIC auto-fill කිරීමට අවශ්‍ය නම්, Apps Script එකේ
+    // MC No. පමණක් යතුර ලෙස ගබඩා කළ entry එකක් ද තිබිය යුතුය.
+
+    if(found){
+      // ක්ෂණිකව NRIC ෆිල් කරන්න
+      nricInput.value = found.nric;
+    } else {
+      // යම් යම් අවස්ථාවලදී MC No. එකේ පමණක් entry එකක් නොතිබුණත්,
+      // NRIC කොටස හිස් කරන්න.
+      nricInput.value = ""; 
+      msgEl.textContent = "";
+    }
+  });
+
+  // Verify button click
+  document.getElementById("verifyMcBtn").addEventListener("click", function(){
+    const mc = (document.getElementById("mcNo").value || "").trim();
+    const nric = (document.getElementById("nric").value || "").trim().toUpperCase();
+    const msgEl = document.getElementById("msg");
+    const cert = document.getElementById("certificatePanel");
+    
+    cert.style.display = "none";
+    cert.setAttribute("aria-hidden","true");
+
+    if(!mc || !nric){
+      msgEl.textContent = "Please enter both the MC Number and NRIC.";
+      msgEl.style.color = "#b91c1c";
+      return;
+    }
+
+    // සත්‍යාපනය සඳහා ප්‍රධාන යතුර: MCNo|NRICNo
+    const key = mc + "|" + nric;
+    const entry = currentDB[key]; 
+
+    if(!entry || entry.status === undefined){ // status: undefined යනු auto-fill entry එකක් විය හැක
+      msgEl.textContent = "No record found for the given MC No. and NRIC.";
+      msgEl.style.color = "#b91c1c";
+      return;
+    }
+
+    // දත්ත පැනලයට ඇතුල් කිරීම (පරිවර්තනය කළ DD/MM/YYYY දිනයන් සමඟ)
+    document.getElementById("c_mc").textContent = entry.mcNo;
+    document.getElementById("c_issued").textContent = entry.issued;
+    document.getElementById("c_name").textContent = entry.name;
+    document.getElementById("c_nric").textContent = entry.nric;
+    document.getElementById("c_start").textContent = entry.start;
+    document.getElementById("c_end").textContent = entry.end;
+    document.getElementById("c_days").textContent = entry.days;
+    document.getElementById("c_doctor").textContent = entry.doctor;
+
+    // පැනලය පෙන්වන්න
+    cert.style.display = "block";
+    cert.setAttribute("aria-hidden","false");
+
+    msgEl.textContent = "Record found. Certificate panel updated.";
+    msgEl.style.color = "#059669"; 
+    cert.scrollIntoView({behavior:"smooth",block:"start"});
+  });
+</script>
+</body>
+</html>
